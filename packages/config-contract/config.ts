@@ -1,5 +1,5 @@
 export const config = {
-  "CONTRACT_ADDRESS": "0x6760aa9332c0acb87b6a7853e89e1a2e90cee6f5"
+  "CONTRACT_ADDRESS": "0xa7559bb3b0bae6fe7e653efc63a3c1f681bb3a27"
 };
 export const VECHAINACADEMY_CONTRACT_ABI = [
   {

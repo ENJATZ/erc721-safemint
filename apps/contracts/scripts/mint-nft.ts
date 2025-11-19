@@ -26,7 +26,7 @@ function loadIdentity() {
 
 async function mintNft(recipientAddress: string, tokenURI: string) {
   try {
-    const thorTestnetClient = ThorClient.at(SOLO_URL);
+    const thorClient = ThorClient.at(SOLO_URL);
     const identity = loadIdentity();
     console.log("Identity:", identity);
 
@@ -40,9 +40,13 @@ async function mintNft(recipientAddress: string, tokenURI: string) {
       [recipientAddress, tokenURI]
     );
 
-    const gas = await thorTestnetClient.gas.estimateGas([clause]);
+    const gas = await thorClient.gas.estimateGas(
+      [clause],
+      identity.address.toString(),
+      { gasPadding: 0.2 }
+    );
 
-    const body = await thorTestnetClient.transactions.buildTransactionBody(
+    const body = await thorClient.transactions.buildTransactionBody(
       [clause],
       gas.totalGas
     );
@@ -50,12 +54,12 @@ async function mintNft(recipientAddress: string, tokenURI: string) {
     const signedTransaction = Transaction.of(body).sign(identity.privateKey);
 
     const mintResult = await (
-      await thorTestnetClient.transactions.sendTransaction(signedTransaction)
+      await thorClient.transactions.sendTransaction(signedTransaction)
     ).wait();
 
     console.log("Mint result:", mintResult);
 
-    const balanceOfResult = await thorTestnetClient.contracts.executeCall(
+    const balanceOfResult = await thorClient.contracts.executeCall(
       config.CONTRACT_ADDRESS,
       ABIContract.ofAbi(VECHAINACADEMY_CONTRACT_ABI).getFunction("balanceOf"),
       [recipientAddress]
